@@ -29,8 +29,7 @@ int Reversi::convertXY(int x, int y) {
 }
 
 bool Reversi::isValid(int x, int y) {
-	int location = convertXY(x, y);
-	if (location < 0 || location >= 64 || x<0 || x>8||y<0||y>8)
+	if (x<0 || x>8||y<0||y>8)
 		return false;
 	else
 		return true;
