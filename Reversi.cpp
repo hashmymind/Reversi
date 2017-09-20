@@ -1,5 +1,6 @@
 #include <cstring>
 #include <vector>
+#include <algorithm>
 #include "Reversi.h"
 
 using namespace std;
@@ -29,14 +30,14 @@ int Reversi::convertXY(int x, int y) {
 }
 
 bool Reversi::isValid(int x, int y) {
-	if (x<0 || x>8||y<0||y>8)
+	if (x<1 || x>8||y<1||y>8)
 		return false;
 	else
 		return true;
 }
 
 int Reversi::check(int x, int y) {
-	if (isValid(x, y) && this->mArry[this->convertXY(x, y)] != eEMPTY)
+	if (isValid(x, y) && this->mArry[this->convertXY(x, y)] != eEMPTY && this->mArry[this->convertXY(x, y)] != ePLAYABLE)
 		return 0;
 	int eatCount = 0;
 	for (int i = 0; i<8; ++i) {
@@ -44,7 +45,7 @@ int Reversi::check(int x, int y) {
 		int otherCount = 0;
 		while (isValid(newX, newY)) {
 			char chessNow = this->mArry[this->convertXY(newX, newY)];
-			if (chessNow != eEMPTY) {
+			if (chessNow != eEMPTY && chessNow != ePLAYABLE) {
 				if ((this->bBW && chessNow == eBLACK) || (!this->bBW && chessNow == eWHITE)) {
 					eatCount += otherCount;
 					break;
@@ -70,26 +71,29 @@ Reversi Reversi::operator=(Reversi rhs) {
 }
 
 bool Reversi::isEnd() {
-	bool oriBW = this->bBW;
+	bool flag = true;
 	for (int x = 1; x <= 8; ++x) {
 		for (int y = 1; y <= 8; ++y) {
-			if (this->mArry[this->convertXY(x, y)] == eEMPTY) {
-				this->bBW = true;
+			// can be better
+			if (this->mArry[this->convertXY(x, y)] == eEMPTY || this->mArry[this->convertXY(x, y)] == ePLAYABLE) {
 				if (this->check(x, y) != 0) {
-					this->bBW = oriBW;
-					return false;
+					flag = false;
+					this->mArry[this->convertXY(x, y)] = ePLAYABLE;
 				}
-				this->bBW = false;
+				else {
+					if (this->mArry[this->convertXY(x, y)] == this->ePLAYABLE)
+						this->mArry[this->convertXY(x, y)] = eEMPTY;
+				}
+				this->bBW = !this->bBW;
 				if (this->check(x, y) != 0) {
-					this->bBW = oriBW;
-					return false;
+					flag = false;
 				}
+				this->bBW = !this->bBW;
 			}
 
 		}
 	}
-	this->bBW = oriBW;
-	return true;
+	return flag;
 }
 
 bool Reversi::isBW() {
@@ -104,7 +108,7 @@ void Reversi::setBW(int x, int y) {
 		vector<int> flipList;
 		while (isValid(newX, newY)) {
 			char chessNow = this->mArry[this->convertXY(newX, newY)];
-			if (chessNow != eEMPTY) {
+			if (chessNow != eEMPTY && chessNow != ePLAYABLE) {
 				if ((this->bBW && chessNow == eBLACK) || (!this->bBW && chessNow == eWHITE)) {
 					//fliping
 					for (int k = 0; k < flipList.size(); ++k) {
@@ -131,7 +135,7 @@ void Reversi::setBW(int x, int y) {
 	bool flag = false;
 	for (int x = 1; x <= 8; ++x) {
 		for (int y = 1; y <= 8; ++y) {
-			if (this->mArry[this->convertXY(x, y)] == eEMPTY) {
+			if (this->mArry[this->convertXY(x, y)] == eEMPTY || this->mArry[this->convertXY(x, y)] == ePLAYABLE) {
 				if (this->check(x, y) != 0) {
 					flag = true;
 				}
@@ -159,4 +163,54 @@ int Reversi::WCount() {
 		if (this->mArry[i] == eWHITE)
 			++result;
 	return result;
+}
+
+// black base
+int evalue(Reversi r) {
+	
+	int value = r.BCount() - r.WCount();
+	//角佔領判斷
+	for (int i = 0; i < 4; ++i) {
+		char chessNow = r.getBW(corner[i][0], corner[i][1]);
+		if (chessNow == r.eBLACK) value += cornerVal;
+		else if (chessNow == r.eWHITE) value -= cornerVal;
+	}
+	//星位佔領判斷
+	for (int i = 0; i < 4; ++i) {
+		char chessNow = r.getBW(xsquare[i][0], xsquare[i][1]);
+		if (chessNow == r.eBLACK) value -= xsquareVal;
+		else if (chessNow == r.eWHITE) value += xsquareVal;
+	}
+	//c位佔領判斷
+	for (int i = 0; i < 8; ++i) {
+		char chessNow = r.getBW(csquare[i][0], csquare[i][1]);
+		if (chessNow == r.eBLACK) value -= csquareVal;
+		else if (chessNow == r.eWHITE) value += csquareVal;
+	}
+	return value;
+}
+
+// ai is black
+int minmax(Reversi r,int depth) {
+	if (r.isEnd() || depth == 0) {
+		return evalue(r);
+	}
+	// isEnd執行過　代表playable正確
+	int value = r.isBW() ? -inf : inf;
+	Reversi tmp;
+	for (int x = 1; x <= 8; ++x) {
+		for (int y = 1; y <= 8; ++y) {
+			if (r.getBW(x, y) != r.ePLAYABLE)continue;
+			tmp = r;
+			tmp.setBW(x, y);
+			if (r.isBW()) {
+				value = std::max(minmax(tmp,depth-1),value);
+			}
+			else {
+				value = std::min(minmax(tmp, depth - 1), value);
+			}
+
+		}
+	}
+	return value;
 }
