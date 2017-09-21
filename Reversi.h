@@ -2,7 +2,7 @@
 #include <vector>
 
 //
-const int csquareVal = 10, xsquareVal = 15, cornerVal = 30;
+const int sideVal = 4 ,csquareVal = 6, xsquareVal = 7, cornerVal = 30;
 const int corner[4][2] = { { 1,1 },{ 1,8 },{ 8,1 },{ 8,8 } };
 const int xsquare[4][2] = { {2,2},{2,7},{7,2},{7,7} };
 const int csquare[8][2] = { {1,2},{1,7},{2,1},{2,8},{7,1},{7,8},{8,2},{8,7} };
