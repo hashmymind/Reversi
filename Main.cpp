@@ -1,6 +1,7 @@
 #ifndef UNICODE
 #define UNICODE
 #endif 
+#define DEBUG 1
 
 #include <windows.h>
 #include <iostream>
@@ -25,6 +26,7 @@ bool key_reg[16] = { 0 };
 bool isAIMode = false;
 void paintPanel();
 pair<int, int> aiMove();
+int aiVal = 0;
 
 stack<Reversi> past, future;
 
@@ -69,6 +71,7 @@ pair<int, int> aiMove() {
 			}
 		}
 	}
+	aiVal = value;
 	return move;
 }
 
@@ -93,6 +96,7 @@ void KeyUpEvent( WPARAM wParam )
 	//==== Tab、Enter、Ctrl... ====//
 	if (wParam == VK_TAB) {
 		// redo
+		if (isAIMode) return;
 		if (!future.empty()) {
 			past.push(reversi);
 			reversi = future.top();
@@ -102,6 +106,7 @@ void KeyUpEvent( WPARAM wParam )
 	}
 	else if( wParam == VK_BACK){
 		// undo
+		if (isAIMode) return;
 		if (!past.empty()) {
 			future.push(reversi);
 			reversi = past.top();
@@ -262,17 +267,18 @@ void paintPanel() {
 		cout << (key_reg[i]?"↑":"　");
 		}
 	cout << endl;
-	cout << "Ｎｏｗ：" << (reversi.isBW() ? uBLACK : uWHITE) << endl;
-	cout << uBLACK << "： " << reversi.BCount() << "　" << uWHITE << "： " << reversi.WCount() << endl;
-	cout << "ＵＮＤＯ：ＢＡＣＫＳＰＡＣＥ　　ＲＥＤＯ：ＴＡＢ\nAI MODE（ｏｎ＼ｏｆｆ）：SPACE　　　ＲＥＳＥＴ：ＥＮＴＥＲ" << endl;
-	if (isAIMode) cout << AICOLOR << "ＡＩ　Ｍｏｄｅ　ｉｓ　ｏｎ！" << COLOR_RESET << endl;
+	cout << "Now: " << (reversi.isBW() ? uBLACK : uWHITE) << endl;
+	cout << uBLACK << ": " << reversi.BCount() << "  " << uWHITE << ": " << reversi.WCount() << endl;
+	cout << "undo: backspace      redo: tab\nAI Mode(" << (isAIMode?"off":"on") << "): space   reset: enter" << endl;
+	if (isAIMode) cout << AICOLOR << "AI Mode is on, redo undo is disable! AI plays " << uBLACK << COLOR_RESET << endl;
 	if (reversi.isEnd()) {
 		int result = reversi.BCount() - reversi.WCount();
 		if (result !=0){
-			cout << "Ｗｉｎｎｅｒ　ｉｓ　" << (result > 0 ? uBLACK : uWHITE);
+			cout << "Winner is " << (result > 0 ? uBLACK : uWHITE) << "!" << endl;
 		}
 		else {
-			cout << "Ｔｈｅ　ｇａｍｅ　ｗａｓ　ｄｒａｗｎ" << endl;
+			cout << "This game was drawn~" << endl;
 		}
 	}
+	if (DEBUG) cout << AICOLOR << "AI value: " << aiVal << COLOR_RESET <<  endl;
 }
