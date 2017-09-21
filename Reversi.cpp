@@ -23,6 +23,7 @@ void Reversi::init() {
 	this->mArry[35] = eBLACK;
 	this->mArry[36] = eWHITE;
 	this->bBW = true;
+	this->steps = 0;
 }
 
 int Reversi::convertXY(int x, int y) {
@@ -68,6 +69,20 @@ Reversi Reversi::operator=(Reversi rhs) {
 	this->bBW = rhs.bBW;
 	memcpy(this->mArry, rhs.mArry, sizeof(this->mArry));
 	return *this;
+}
+
+int Reversi::avaMoving() {
+	int result = 0;
+	for (int x = 1; x <= 8; ++x) {
+		for (int y = 1; y <= 8; ++y) {
+			if (this->mArry[this->convertXY(x, y)] == eEMPTY || this->mArry[this->convertXY(x, y)] == ePLAYABLE) {
+				if (this->check(x, y) != 0) {
+					++result;
+				}
+			}
+		}
+	}
+	return result;
 }
 
 bool Reversi::isEnd() {
@@ -143,10 +158,15 @@ void Reversi::setBW(int x, int y) {
 		}
 	}
 	if(!flag)this->bBW = oriBW;
+	++this->steps;
 }
 
 char Reversi::getBW(int x, int y) {
 	return this->mArry[this->convertXY(x, y)];
+}
+
+int Reversi::getSteps() {
+	return this->steps;
 }
 
 int Reversi::BCount() {
@@ -166,8 +186,8 @@ int Reversi::WCount() {
 }
 
 // black base
-int evalue(Reversi r) {
-	int value = r.BCount() - r.WCount();
+float evalue(Reversi r) {
+	float value = r.BCount() - r.WCount();
 	//角佔領判斷
 	for (int i = 0; i < 4; ++i) {
 		char chessNow = r.getBW(corner[i][0], corner[i][1]);
@@ -208,26 +228,30 @@ int evalue(Reversi r) {
 }
 
 // ai is black
-int minmax(Reversi r,int depth) {
+float minmax(Reversi r, int depth, float alpha, float beta) {
 	if (r.isEnd() || depth == 0) {
 		return evalue(r);
 	}
 	// isEnd執行過　代表playable正確
-	int value = r.isBW() ? -inf : inf;
 	Reversi tmp;
-	for (int x = 1; x <= 8; ++x) {
-		for (int y = 1; y <= 8; ++y) {
+	bool flag = true;
+	for (int x = 1; x <= 8 && flag; ++x) {
+		for (int y = 1; y <= 8 && flag; ++y) {
 			if (r.getBW(x, y) != r.ePLAYABLE)continue;
 			tmp = r;
 			tmp.setBW(x, y);
 			if (r.isBW()) {
-				value = std::max(minmax(tmp,depth-1),value);
+				alpha = std::max(minmax(tmp, depth - 1, alpha, beta), alpha);
+				if (beta <= alpha)
+					flag = false;
 			}
 			else {
-				value = std::min(minmax(tmp, depth - 1), value);
+				beta = std::min(minmax(tmp, depth - 1, alpha, beta), beta);
+				if (beta <= alpha)
+					flag = false;
 			}
 
 		}
 	}
-	return value;
+	return (r.isBW()?alpha:beta);
 }
