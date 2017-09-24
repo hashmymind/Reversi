@@ -31,7 +31,7 @@ int Reversi::convertXY(int x, int y) {
 }
 
 bool Reversi::isValid(int x, int y) {
-	if (x<1 || x>8||y<1||y>8)
+	if (x<1 || x>8 || y<1 || y>8)
 		return false;
 	else
 		return true;
@@ -157,7 +157,7 @@ void Reversi::setBW(int x, int y) {
 			}
 		}
 	}
-	if(!flag)this->bBW = oriBW;
+	if (!flag)this->bBW = oriBW;
 	++this->steps;
 }
 
@@ -253,5 +253,5 @@ float minmax(Reversi r, int depth, float alpha, float beta) {
 
 		}
 	}
-	return (r.isBW()?alpha:beta);
+	return (r.isBW() ? alpha : beta);
 }
