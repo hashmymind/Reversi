@@ -2,10 +2,10 @@
 #include <vector>
 
 //
-const float sideVal = 4 ,csquareVal = 6, xsquareVal = 7, cornerVal = 30;
+const float sideVal = 4, csquareVal = 6, xsquareVal = 7, cornerVal = 30;
 const int corner[4][2] = { { 1,1 },{ 1,8 },{ 8,1 },{ 8,8 } };
-const int xsquare[4][2] = { {2,2},{2,7},{7,2},{7,7} };
-const int csquare[8][2] = { {1,2},{1,7},{2,1},{2,8},{7,1},{7,8},{8,2},{8,7} };
+const int xsquare[4][2] = { { 2,2 },{ 2,7 },{ 7,2 },{ 7,7 } };
+const int csquare[8][2] = { { 1,2 },{ 1,7 },{ 2,1 },{ 2,8 },{ 7,1 },{ 7,8 },{ 8,2 },{ 8,7 } };
 const int inf = 1000000;
 //
 
@@ -15,7 +15,7 @@ private:
 	char mArry[64];
 	int steps;
 public:
-	enum { eEMPTY, eBLACK, eWHITE, ePLAYABLE};
+	enum { eEMPTY, eBLACK, eWHITE, ePLAYABLE };
 	int numWhite, numBlack;
 
 	void init();
@@ -38,25 +38,3 @@ public:
 
 float evalue(Reversi);
 float minmax(Reversi, int, float, float);
-
-const char helloScreen[30][121]={
-"",
-"",
-"",
-"",
-"                         _______  _______           _______  _______  _______ _________ ",
-"                        (  ____ )(  ____ \\|\\     /|(  ____ \\(  ____ )(  ____ \\__   __/",
-"                        | (    )|| (    \\/| )   ( || (    \\/| (    )|| (    \\/   ) (",
-"                        | (____)|| (__    | |   | || (__    | (____)|| (_____    | |",
-"                        |     __)|  __)   ( (   ) )|  __)   |     __)(_____  )   | |",
-"                        | (\\ (   | (       \\ \\_/ / | (      | (\\ (         ) |   | |",
-"                        | ) \\ \\__| (____/\\  \\   /  | (____/\\| ) \\ \\__/\\____) |___) (___",
-"                        |/   \\__/(_______/   \\_/   (_______/|/   \\__/\\_______)\\_______/",
-"                                                                              B10515009",
-"",
-"",
-"",
-"",
-"",
-"                                           [Press shift to play]"
-};
