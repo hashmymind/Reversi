@@ -11,11 +11,6 @@
 #include <stack>
 #include "Reversi.h"
 
-#define CYAN "\x1b[46m"
-#define AICOLOR "\x1b[33m"
-#define BANGCOLOR "\x1b[32m"
-#define COLOR_RESET "\x1b[0m"
-
 using namespace std;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -34,21 +29,21 @@ const char helloScreen[30][121] = {
 	"",
 	"",
 	"",
-	"                         _______  _______           _______  _______  _______ _________ ",
-	"                        (  ____ )(  ____ \\|\\     /|(  ____ \\(  ____ )(  ____ \\\\__   __/",
-	"                        | (    )|| (    \\/| )   ( || (    \\/| (    )|| (    \\/   ) (",
-	"                        | (____)|| (__    | |   | || (__    | (____)|| (_____    | |",
-	"                        |     __)|  __)   ( (   ) )|  __)   |     __)(_____  )   | |",
-	"                        | (\\ (   | (       \\ \\_/ / | (      | (\\ (         ) |   | |",
-	"                        | ) \\ \\__| (____/\\  \\   /  | (____/\\| ) \\ \\__/\\____) |___) (___",
-	"                        |/   \\__/(_______/   \\_/   (_______/|/   \\__/\\_______)\\_______/",
-	"                                                         B10515009ChengYao(Ver 1.0 9/24/2017)",
+	"     _______  _______           _______  _______  _______ _________ ",
+	"    (  ____ )(  ____ \\|\\     /|(  ____ \\(  ____ )(  ____ \\\\__   __/",
+	"    | (    )|| (    \\/| )   ( || (    \\/| (    )|| (    \\/   ) (",
+	"    | (____)|| (__    | |   | || (__    | (____)|| (_____    | |",
+	"    |     __)|  __)   ( (   ) )|  __)   |     __)(_____  )   | |",
+	"    | (\\ (   | (       \\ \\_/ / | (      | (\\ (         ) |   | |",
+	"    | ) \\ \\__| (____/\\  \\   /  | (____/\\| ) \\ \\__/\\____) |___) (___",
+	"    |/   \\__/(_______/   \\_/   (_______/|/   \\__/\\_______)\\_______/",
+	"                              B10515009ChengYao(Ver 1.0 9/24/2017)",
 	"",
 	"",
 	"",
 	"",
 	"",
-	"                                           [Press shift to play]"
+	"                           [Press shift to play]"
 };
 
 char aiSettingScreen[30][121] = {
@@ -329,11 +324,11 @@ void paintPanel() {
 		return;
 	}
 	else if (aiSetting) {
-		cout << BANGCOLOR;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
 		for (int i = 0; i < 8; ++i) {
 			cout << aiSettingScreen[i] << endl;
 		}
-		cout << COLOR_RESET;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		for (int i = 8; i < 13 &&!depth; ++i) {
 			cout << aiSettingScreen[i] << endl;
 		}
@@ -350,7 +345,7 @@ void paintPanel() {
 		cout << coordinate.substr(16 + 2 * (x - 1), 2);
 		for (int y = 1; y <= 8; ++y) {
 			if (key_reg[x + 7] || key_reg[y - 1])
-				cout << CYAN;
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_BLUE|FOREGROUND_INTENSITY);
 			char state = reversi.getBW(x, y);
 			if (state == reversi.eBLACK) {
 				cout << uBLACK;
@@ -365,7 +360,7 @@ void paintPanel() {
 				cout << uEMPTY;
 			}
 			if (key_reg[x + 7] || key_reg[y - 1])
-				cout << COLOR_RESET;
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		}
 		cout << (key_reg[7 + x] ? "←" : "　") << endl;
 	}
@@ -377,7 +372,7 @@ void paintPanel() {
 	cout << "Now: " << (reversi.isBW() ? uBLACK : uWHITE) << endl;
 	cout << uBLACK << ": " << reversi.BCount() << "  " << uWHITE << ": " << reversi.WCount() << endl;
 	cout << "undo: backspace      redo: tab\nAI Mode(" << (isAIMode ? "off" : "on") << "): space   reset: enter" << endl;
-	if (isAIMode) cout << AICOLOR << "AI Mode is on, redo is disable! AI plays " << (aiPlayer? uBLACK:uWHITE ) << COLOR_RESET << endl;
+	if (isAIMode) cout << "AI Mode is on, redo is disable! AI plays " << (aiPlayer? uBLACK:uWHITE ) << endl;
 	if (isEnd) {
 		int result = reversi.BCount() - reversi.WCount();
 		if (result != 0) {
@@ -387,5 +382,5 @@ void paintPanel() {
 			cout << "This game was drawn~" << endl;
 		}
 	}
-	if (DEBUG) cout << AICOLOR << "AI value: " << aiVal << "\nSteps: " << reversi.getSteps() << COLOR_RESET << endl;
+	if (DEBUG) cout << "AI value: " << aiVal << "\nSteps: " << reversi.getSteps() <<endl;
 }
