@@ -188,25 +188,25 @@ int Reversi::WCount() {
 // black base
 float evalue(Reversi r) {
 	float value = r.BCount() - r.WCount();
-	//è§’ä½”é ˜åˆ¤æ–·
+	//¨¤¦û»â§PÂ_
 	for (int i = 0; i < 4; ++i) {
 		char chessNow = r.getBW(corner[i][0], corner[i][1]);
 		if (chessNow == r.eBLACK) value += cornerVal;
 		else if (chessNow == r.eWHITE) value -= cornerVal;
 	}
-	//æ˜Ÿä½ä½”é ˜åˆ¤æ–·
+	//¬P¦ì¦û»â§PÂ_
 	for (int i = 0; i < 4; ++i) {
 		char chessNow = r.getBW(xsquare[i][0], xsquare[i][1]);
 		if (chessNow == r.eBLACK) value -= xsquareVal;
 		else if (chessNow == r.eWHITE) value += xsquareVal;
 	}
-	//cä½ä½”é ˜åˆ¤æ–·
+	//c¦ì¦û»â§PÂ_
 	for (int i = 0; i < 8; ++i) {
 		char chessNow = r.getBW(csquare[i][0], csquare[i][1]);
 		if (chessNow == r.eBLACK) value -= csquareVal;
 		else if (chessNow == r.eWHITE) value += csquareVal;
 	}
-	//é‚Šä½”é ˜åˆ¤æ–·
+	//Ãä¦û»â§PÂ_
 	for (int i = 3; i <= 6; ++i) {
 		char chessNow = r.getBW(1, i);
 		if (chessNow == r.eBLACK) value += sideVal;
@@ -229,10 +229,13 @@ float evalue(Reversi r) {
 
 // ai is black
 float minmax(Reversi r, int depth, float alpha, float beta) {
-	if (r.isEnd() || depth == 0) {
+	if (r.isEnd()) {
+		return r.BCount() - r.WCount();
+	}
+	else if (depth == 0) {
 		return evalue(r);
 	}
-	// isEndåŸ·è¡ŒéŽã€€ä»£è¡¨playableæ­£ç¢º
+	// isEnd°õ¦æ¹L¡@¥Nªíplayable¥¿½T
 	Reversi tmp;
 	bool flag = true;
 	for (int x = 1; x <= 8 && flag; ++x) {

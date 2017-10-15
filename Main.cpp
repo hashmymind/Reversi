@@ -15,11 +15,11 @@ using namespace std;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-const string uBLACK = "‚óè", uWHITE = "‚óã", uEMPTY = "Ôºç", uPLAYABLE = "Ôºä";
+const string uBLACK = "°¥", uWHITE = "°≥", uEMPTY = "°–", uPLAYABLE = "°Ø";
 int depth = 0, delayTime = 1000;
 Reversi reversi;
 bool key_reg[16] = { 0 };
-bool isAIMode = false,aiPlayer = true, aiSetting = false;
+bool isAIMode = false, aiPlayer = true, aiSetting = false;
 bool isHello = true;
 void paintPanel();
 pair<int, int> aiMove();
@@ -62,8 +62,8 @@ char aiSettingScreen[30][121] = {
 	"                      (3)Hard(not that hard)",
 	"                     Select COLOR",
 	"",
-	"                      (1)‚óè",
-	"                      (2)‚óã"
+	"                      (1)°¥",
+	"                      (2)°≥"
 };
 
 stack<Reversi> past, future;
@@ -93,7 +93,7 @@ pair<int, int> aiMove() {
 	Reversi tmp;
 	tmp = reversi;
 	reversi.isEnd();// for playable
-	float value = aiPlayer?-inf:inf;
+	float value = aiPlayer ? -inf : inf;
 	pair<int, int> move;
 	for (int x = 1; x <= 8; ++x) {
 		for (int y = 1; y <= 8; ++y) {
@@ -124,9 +124,9 @@ pair<int, int> aiMove() {
 
 void KeyDownEvent(WPARAM wParam)
 {
-	//==== Ëã±ÊñáÂ≠óÊØçÊàñÊï∏Â≠ó ====//
+	//==== ≠^§Â¶r•¿©Œº∆¶r ====//
 	if (wParam >= '1' &&wParam <= '8') {
-		key_reg[wParam - '1' +8] = true;
+		key_reg[wParam - '1' + 8] = true;
 	}
 	else if (wParam >= 'A'&&wParam <= 'H') {
 		key_reg[wParam - 'A'] = true;
@@ -134,8 +134,9 @@ void KeyDownEvent(WPARAM wParam)
 	else if (wParam >= 'a' && wParam <= 'h') {
 		key_reg[wParam - 'a'] = true;
 	}
-
 	keyinput();
+	system("CLS");
+	paintPanel();
 }
 
 void KeyUpEvent(WPARAM wParam)
@@ -143,7 +144,7 @@ void KeyUpEvent(WPARAM wParam)
 	if (isHello && wParam != VK_SHIFT) {
 		return;
 	}
-	//==== Tab„ÄÅEnter„ÄÅCtrl... ====//
+	//==== Tab°BEnter°BCtrl... ====//
 	if (wParam == VK_TAB) {
 		// redo
 		if (isAIMode) return;
@@ -175,7 +176,7 @@ void KeyUpEvent(WPARAM wParam)
 		reversi.isEnd();// for hint
 	}
 	else if (wParam == VK_SPACE) {
-		if (!isAIMode && ! aiSetting) {
+		if (!isAIMode && !aiSetting) {
 			aiSetting = true;
 			reversi.init();
 			//isAIMode = true;
@@ -207,7 +208,7 @@ void KeyUpEvent(WPARAM wParam)
 				if (wParam == '1') {
 					aiPlayer = true;
 				}
-				else if (wParam == '2'){
+				else if (wParam == '2') {
 					aiPlayer = false;
 				}
 				isAIMode = true;
@@ -221,11 +222,13 @@ void KeyUpEvent(WPARAM wParam)
 	else if (wParam >= 'a' && wParam <= 'h') {
 		key_reg[wParam - 'a'] = false;
 	}
+	system("CLS");
+	paintPanel();
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
-	//==== Ë®ªÂÜäË¶ñÁ™óÈ°ûÂà• ====//
+	//==== µ˘•Uµ¯µ°√˛ßO ====//
 	const wchar_t CLASS_NAME[] = L"Sample Window Class";
 
 	WNDCLASS wc = {};
@@ -236,40 +239,40 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 
 	RegisterClass(&wc);
 
-	//==== ÂâµÂª∫Ë¶ñÁ™ó ====//
+	//==== ≥–´ÿµ¯µ° ====//
 	HWND hwnd = CreateWindowEx(
 		0,                      // Optional window styles.
-		CLASS_NAME,             // Ë¶ñÁ™óÈ°ûÂà•
-		L"Reversi",				// Ë¶ñÁ™óÊ®ôÈ°å
-		WS_OVERLAPPEDWINDOW,    // Ë¶ñÁ™óÈ¢®Ê†º
-		0, 0, 5, 5,				// Ë¶ñÁ™óÂ§ßÂ∞èÂèä‰ΩçÁΩÆ
-		NULL,					// Parent Ë¶ñÁ™ó    
-		NULL,					// ÈÅ∏ÂñÆ
+		CLASS_NAME,             // µ¯µ°√˛ßO
+		L"Reversi",				// µ¯µ°º–√D
+		WS_OVERLAPPEDWINDOW,    // µ¯µ°≠∑ÆÊ
+		0, 0, 5, 5,				// µ¯µ°§j§p§Œ¶Ï∏m
+		NULL,					// Parent µ¯µ°    
+		NULL,					// øÔ≥Ê
 		hInstance,				// Instance handle
 		NULL					// Additional application data
-	);
+		);
 
 	if (hwnd == NULL)
 	{
 		return 0;
 	}
 
-	//==== ÂâµÂª∫ console Ë¶ñÁ™ó ====//
+	//==== ≥–´ÿ console µ¯µ° ====//
 	AllocConsole();
 	freopen("CONOUT$", "wb", stdout);
 
 	ShowWindow(hwnd, nCmdShow);
 
-	//==== Âü∑Ë°åË®äÊÅØËø¥Âúà ====//
+	//==== ∞ı¶Ê∞TÆß∞j∞È ====//
 	reversi.init();
 	reversi.isEnd();
 	MSG msg = {};
+	system("CLS");
+	paintPanel();
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
-		system("CLS");
-		paintPanel();
 		if (isAIMode && reversi.isBW() == aiPlayer) {
 			//ai move
 			cout << "AI thinking . . ." << endl;
@@ -329,23 +332,23 @@ void paintPanel() {
 			cout << aiSettingScreen[i] << endl;
 		}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-		for (int i = 8; i < 13 &&!depth; ++i) {
+		for (int i = 8; i < 13 && !depth; ++i) {
 			cout << aiSettingScreen[i] << endl;
 		}
 		for (int i = 13; i < 17 && depth; ++i) {
 			cout << aiSettingScreen[i] << endl;
 		}
-		
+
 		return;
 	}
 
-	string coordinate = "ÔΩÅÔΩÇÔΩÉÔΩÑÔΩÖÔΩÜÔΩáÔΩàÔºëÔºíÔºìÔºîÔºïÔºñÔºóÔºò";// 2 char wide for each
-	cout << "„ÄÄ" << coordinate.substr(0, 16) << endl;//1~8
+	string coordinate = "¢È¢Í¢Î¢Ï¢Ì¢Ó¢Ô¢¢∞¢±¢≤¢≥¢¥¢µ¢∂¢∑";// 2 char wide for each
+	cout << "°@" << coordinate.substr(0, 16) << endl;//1~8
 	for (int x = 1; x <= 8; ++x) {
 		cout << coordinate.substr(16 + 2 * (x - 1), 2);
 		for (int y = 1; y <= 8; ++y) {
 			if (key_reg[x + 7] || key_reg[y - 1])
-				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_BLUE|FOREGROUND_INTENSITY);
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_BLUE | FOREGROUND_INTENSITY);
 			char state = reversi.getBW(x, y);
 			if (state == reversi.eBLACK) {
 				cout << uBLACK;
@@ -362,17 +365,17 @@ void paintPanel() {
 			if (key_reg[x + 7] || key_reg[y - 1])
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 		}
-		cout << (key_reg[7 + x] ? "‚Üê" : "„ÄÄ") << endl;
+		cout << (key_reg[7 + x] ? "°ˆ" : "°@") << endl;
 	}
-	cout << "„ÄÄ";
+	cout << "°@";
 	for (int i = 0; i < 8; ++i) {
-		cout << (key_reg[i] ? "‚Üë" : "„ÄÄ");
+		cout << (key_reg[i] ? "°Ù" : "°@");
 	}
 	cout << endl;
 	cout << "Now: " << (reversi.isBW() ? uBLACK : uWHITE) << endl;
 	cout << uBLACK << ": " << reversi.BCount() << "  " << uWHITE << ": " << reversi.WCount() << endl;
 	cout << "undo: backspace      redo: tab\nAI Mode(" << (isAIMode ? "off" : "on") << "): space   reset: enter" << endl;
-	if (isAIMode) cout << "AI Mode is on, redo is disable! AI plays " << (aiPlayer? uBLACK:uWHITE ) << endl;
+	if (isAIMode) cout << "AI Mode is on, redo is disable! AI plays " << (aiPlayer ? uBLACK : uWHITE) << endl;
 	if (isEnd) {
 		int result = reversi.BCount() - reversi.WCount();
 		if (result != 0) {
@@ -382,5 +385,5 @@ void paintPanel() {
 			cout << "This game was drawn~" << endl;
 		}
 	}
-	if (DEBUG) cout << "AI value: " << aiVal << "\nSteps: " << reversi.getSteps() <<endl;
+	if (DEBUG) cout << "AI value: " << aiVal << "\nSteps: " << reversi.getSteps() << endl;
 }
